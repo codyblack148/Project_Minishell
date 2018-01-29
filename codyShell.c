@@ -14,8 +14,8 @@ int main(void);
 
 int main(void)
 {
-	char **pathv;
-	char *commandLine;
+	char *pathv[MAX_PATH_LEN];
+	char *commandLine[LINE_LEN];
 	struct command_t command = {NULL, 0, {NULL}};
 	int childPID, w;
 
@@ -41,7 +41,7 @@ int main(void)
 			execvp(command.name,command.argv);
 			free(command.name);
 		}
-	  if (w=(wait(NULL)) == -1) {
+	  if ((w=(wait(NULL))) == -1) {
 	  	printf("%s\n","Error in child process. Terminating..." );
 			return -1;
 	  }
