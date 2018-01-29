@@ -4,9 +4,8 @@
 int parsePath(char *dirs[]);
 char *lookupPath(char **argv,char **dir); /*******/
 char *lookupDir(char *s,char **dirs);
-
-int parseCommand(char *,struct command_t);
-void printPrompt();
+int parseCommand(char *,struct command_t *);
+void printPrompt(void);
 void readCommand(char *);
 
 #endif

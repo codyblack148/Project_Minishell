@@ -7,13 +7,13 @@ LIBS = -lm -lc
 
 CC = gcc
 
-all:    parse_libs test_strsep parseLine
+all:    parse_libs codyShell
 
 clean:
 	rm -f *~
 	rm -f core
 	rm -f *.o
-	rm -f parse_libs test_strsep parseLine
+	rm -f parse_libs codyShell
 
 %.o: %.c
 	$(CC) $(COMPILE_FLAGS) -c $< -o $@
@@ -21,11 +21,5 @@ clean:
 parse_libs: parse_libs.o
 	$(CC) $(LINK_FLAGS) $(LIBS) -o $@ $^
 
-test_strsep: test_strsep.o
-	$(CC) $(LINK_FLAGS) $(LIBS) -o $@ $^
-
-parseLine: parseLine.o
-	$(CC) $(LINK_FLAGS) $(LIBS) -o $@ $^
-
-minishell: minishell.o parse_libs.o
+codyShell: codyShell.o parse_libs.o
 	$(CC) $(LINK_FLAGS) $(LIBS) -o $@ $^

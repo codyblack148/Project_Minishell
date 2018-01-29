@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "parse_libs.h"
 #include "minishell.h"
 
@@ -26,14 +27,14 @@ int parsePath(char *dirs[]) /* page 80 */
     }
 
     memset( dirs, 0, MAX_ARGS * sizeof(char *) );
- 
+
     if( !(hbuffer = buffer = strdup( line )) )
     {
         printf( "Out of memory!\n" );
         return( 1 );
     }
 
-    for( n_parsed = 0, token = strsep( &buffer, sep_chars ) 
+    for( n_parsed = 0, token = strsep( &buffer, sep_chars )
        ; token
        ; token = strsep( &buffer, sep_chars ) )
     {
@@ -70,7 +71,17 @@ char *lookupPath(char **argv,char **dir)
 /* Check to see if file name is already an absolute path name */
    if( *argv[0] == '/' )
    {
-      /*code goes here, maybe just return dup of argv[0]?*/
+      if (access(argv[0],F_OK) == -1) {
+        printf("%s\n","File does not exist." );
+        return NULL;
+      }
+      else if (access(argv[0],X_OK) == -1) {
+        printf("%s\n","File is not executable. Check permissions." );
+        return NULL;
+      }
+      result = (char *) malloc(sizeof(char) * MAX_DIR_LEN);
+      strcpy(result,argv[0]);
+      return result;
    }
 
 /*
@@ -79,8 +90,17 @@ char *lookupPath(char **argv,char **dir)
  */
     for( i = 0 ; i < MAX_PATHS ; ++i )
     {
-        /*code goes here, use access to see is argv[0] is in this directory*/
+        /* use access to see is argv[0] is in this directory*/
         /* if found and is executable, return strcat of directory and argv*/
+        strcpy(pName,dir[i]);
+        strcat(pName,"/");
+        strcat(pName,argv[0]);
+
+        if (access(pName,F_OK || X_OK) != -1) {
+          result = (char *) malloc(sizeof(char) * MAX_DIR_LEN);
+          strcpy(result,pName);
+          return result;
+        }
     }
 
 /*
@@ -117,7 +137,7 @@ char *lookupDir(char *s,char **dirs)
  * we increment argc.
  * Finally, we initialize command.name
  */
-int parseCommand(char *cLine, struct command_t *cmd) /* page 62-3 */
+int parseCommand(char *cLine,struct command_t *cmd) /* page 62-3 */
 {
   int argc = 0;
   char **clPtr = &cLine;
@@ -126,27 +146,28 @@ int parseCommand(char *cLine, struct command_t *cmd) /* page 62-3 */
   while( (cmd->argv[argc++] = strsep(clPtr, WHITESPACE)) != NULL);
   cmd->argv[argc--] = NULL;
   cmd->argc = argc;
+  return 1;
 }
 
-void printPrompt() /* page 79 */
+void printPrompt()
 {
 /*
- * Build the prompt string to have the machine name,
- * current directory, or other desired information.
+ * Build the prompt string.
  */
-  promptString = ">: ";
-  printf("%s", promptString);
+  printf("%s", "CodyShell: ");
 }
 
 /*
  * This code uses any set of I/O functions, such as those in
- * the stdio library to read the entire command line into 
- * the buffer. This implementation is greatly simplified,
- * but it deos the job.
- * NOTE:
- * Read the man page for "gets" for a suitable substitution
+ * the stdio library to read the entire command line into
+ * the buffer.
  */
 void readCommand(char *buffer)
 {
-  gets(buffer);
-} 
+  if(fgets(buffer,LINE_LEN,stdin)== NULL){
+    printf("%s\n","Cannot read command." );
+    exit(-1);
+  }
+  buffer[strlen(buffer)-1] = '\0';
+
+}
