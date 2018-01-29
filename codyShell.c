@@ -6,8 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "minishell.h"
-#include "parse_libs.h"
-#include "parse_libs.c"
+
 
 
 

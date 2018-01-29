@@ -7,7 +7,7 @@ LIBS = -lm -lc
 
 CC = gcc
 
-all:    parse_libs codyShell
+all:    codyShell
 
 clean:
 	rm -f *~
@@ -18,8 +18,8 @@ clean:
 %.o: %.c
 	$(CC) $(COMPILE_FLAGS) -c $< -o $@
 
-parse_libs: parse_libs.o
-	$(CC) $(LINK_FLAGS) $(LIBS) -o $@ $^
+#parse_libs: parse_libs.o
+#	$(CC) $(LINK_FLAGS) $(LIBS) -o $@ $^
 
 codyShell: codyShell.o parse_libs.o
 	$(CC) $(LINK_FLAGS) $(LIBS) -o $@ $^
