@@ -14,10 +14,13 @@ int main(void);
 
 int main(void)
 {
-	char *pathv[MAX_PATH_LEN];
-	char *commandLine[LINE_LEN];
+	char **pathv;
+	char *commandLine;
 	struct command_t command = {NULL, 0, {NULL}};
 	int childPID, w;
+
+	//pathv = (char *) malloc(sizeof(char) * MAX_PATH_LEN);
+	commandLine = (char *) malloc(sizeof(char) * LINE_LEN);
 
 	parsePath(pathv);/* page 80 (parse_libs) */
 
@@ -51,7 +54,8 @@ int main(void)
 
 	}
 printf("%s\n","codyShell terminating..." );
-	free(pathv[0]);
+	free(pathv);
+	free(commandLine);
 
 	return 0;
 }

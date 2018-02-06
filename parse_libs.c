@@ -95,7 +95,7 @@ char *lookupPath(char **argv,char **dir)
         strcat(pName,"/");
         strcat(pName,argv[0]);
 
-        if (access(pName,F_OK || X_OK) != -1) {
+        if (access(pName,F_OK | X_OK) != -1) {
           result = (char *) malloc(sizeof(char) * MAX_DIR_LEN);
           strcpy(result,pName);
           return result;
