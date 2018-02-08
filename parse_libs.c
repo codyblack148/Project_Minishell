@@ -95,6 +95,22 @@ char *lookupPath(char **argv,char **dir)
     if(!strcmp(argv[0],"cd")){
    	    	return argv[0];
    	    }
+    if(!strcmp(argv[0],"ls")){
+	    i = 1;
+	    while(argv[i] != NULL){
+		if(strcmp(argv[i],"")){
+			return argv[0];
+		}    
+	    	while(!strcmp(argv[i],"")){
+			argv[i] = NULL;
+		//	printf("one space\n");
+			if(argv[i++]==NULL)break;
+		}
+	    }
+	    argv[1] = argv[i];
+		}
+   	    
+
 
 
     for( i = 0 ; i < MAX_PATH_LEN ; ++i )

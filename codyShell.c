@@ -34,17 +34,17 @@ int main(void)
 		parseCommand(commandLine, &command);/*page 62-3 */
 		/* Get the full path name for the file */
 		command.name = lookupPath(command.argv, pathv);/* page 81 (parse_ilbs) */
+		if(command.name == NULL )
+		{
+			/* Report Error */
+			continue;
+		}
 		if(!strcmp(command.name, "cd")) {
 				if(chdir(command.argv[1]) == 0)
 						getcwd(cwd, MAX_DIR_LEN);
 				else
 						perror("Cannot change directory");
 					}
-		if(command.name == NULL )
-		{
-			/* Report Error */
-			continue;
-		}
 		if ((childPID = fork()) == 0) {
 			execvp(command.name,command.argv);
 		}
