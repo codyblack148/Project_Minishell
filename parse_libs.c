@@ -65,7 +65,8 @@ char *lookupPath(char **argv,char **dir)
  */
 
     char *result = NULL;
-    char pName[MAX_PATH_LEN];
+    char pName[MAX_PATH_LEN + 1];
+
     int i;
 /* Check to see if file name is already an absolute path name */
    if( *argv[0] == '/' )
@@ -87,8 +88,14 @@ char *lookupPath(char **argv,char **dir)
  * Look in PATH directories.
  * Use access() to see if the file is in a dir.
  */
-    for( i = 0 ; i < MAX_PATHS ; ++i )
+	 if(!strcmp(argv[0],"exit") || !strcmp(argv[0],"quit")){
+	    	printf("Terminating codyShell...\n");
+		exit(0);
+	    }
+
+    for( i = 0 ; i < MAX_PATH_LEN ; ++i )
     {
+	    if(dir[i] == NULL) break;
         /* use access to see is argv[0] is in this directory*/
         /* if found and is executable, return strcat of directory and argv*/
         strcpy(pName,dir[i]);
@@ -98,6 +105,7 @@ char *lookupPath(char **argv,char **dir)
         if (access(pName,F_OK | X_OK) != -1) {
           result = (char *) malloc(sizeof(char) * MAX_DIR_LEN);
           strcpy(result,pName);
+	  
           return result;
         }
     }

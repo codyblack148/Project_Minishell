@@ -14,10 +14,12 @@ int main(void);
 
 int main(void)
 {
-	char *pathv[MAX_PATH_LEN];
-	char *commandLine;
-	struct command_t command = {NULL, 0, {NULL}};
-	int childPID, w;
+	 char *pathv[MAX_PATH_LEN];
+	 char *commandLine;
+	 struct command_t command = {NULL, 0, {NULL}};
+	 int childPID, status,numChildren;
+	 
+
 
 //	pathv = (char *) malloc(sizeof(char) * MAX_PATH_LEN);
 	commandLine = (char *) malloc(sizeof(char) * LINE_LEN);
@@ -31,9 +33,7 @@ int main(void)
 		parseCommand(commandLine, &command);/*page 62-3 */
 		/* Get the full path name for the file */
 		command.name = lookupPath(command.argv, pathv);/* page 81 (parse_ilbs) */
-		if (!strcmp(command.name,"exit") || !strcmp(command.name,"quit") ) {
-			break; //exit while loop. Terminate shell.
-		}
+		
 		if(command.name == NULL )
 		{
 			/* Report Error */
@@ -42,20 +42,14 @@ int main(void)
 		}
 		if ((childPID = fork()) == 0) {
 			execvp(command.name,command.argv);
-			free(command.name);
 		}
-	  if ((w=(wait(NULL))) == -1) {
-	  	printf("%s\n","Error in child process. Terminating..." );
-			return -1;
-	  }
-		else if (w > 0) {
-			free(command.name);
-		}
+		wait(&status);
 
-	}
+	free(command.name);	}
 printf("%s\n","codyShell terminating..." );
-//	free(pathv);
 	free(commandLine);
 
 	return 0;
-}
+
+     	}
+
