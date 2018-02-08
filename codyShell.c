@@ -17,8 +17,9 @@ int main(void)
 	 char *pathv[MAX_PATH_LEN];
 	 char *commandLine;
 	 struct command_t command = {NULL, 0, {NULL}};
-	 int childPID, status,numChildren;
-	 
+	 int childPID, status;
+	 char *cwd = getcwd(NULL, MAX_DIR_LEN);
+
 
 
 //	pathv = (char *) malloc(sizeof(char) * MAX_PATH_LEN);
@@ -33,11 +34,15 @@ int main(void)
 		parseCommand(commandLine, &command);/*page 62-3 */
 		/* Get the full path name for the file */
 		command.name = lookupPath(command.argv, pathv);/* page 81 (parse_ilbs) */
-		
+		if(!strcmp(command.name, "cd")) {
+				if(chdir(command.argv[1]) == 0)
+						getcwd(cwd, MAX_DIR_LEN);
+				else
+						perror("Cannot change directory");
+					}
 		if(command.name == NULL )
 		{
 			/* Report Error */
-			printf("%s\n","Your face is NULL, command failed" );
 			continue;
 		}
 		if ((childPID = fork()) == 0) {
@@ -52,4 +57,3 @@ printf("%s\n","codyShell terminating..." );
 	return 0;
 
      	}
-

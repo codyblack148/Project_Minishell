@@ -92,6 +92,10 @@ char *lookupPath(char **argv,char **dir)
 	    	printf("Terminating codyShell...\n");
 		exit(0);
 	    }
+    if(!strcmp(argv[0],"cd")){
+   	    	return argv[0];
+   	    }
+
 
     for( i = 0 ; i < MAX_PATH_LEN ; ++i )
     {
@@ -105,7 +109,7 @@ char *lookupPath(char **argv,char **dir)
         if (access(pName,F_OK | X_OK) != -1) {
           result = (char *) malloc(sizeof(char) * MAX_DIR_LEN);
           strcpy(result,pName);
-	  
+
           return result;
         }
     }
