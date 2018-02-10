@@ -15,15 +15,14 @@ int main(void);
 int main(void)
 {
 	 char *pathv[MAX_PATH_LEN];
-	 char *commandLine;
+	 char commandLine[LINE_LEN + 1];
 	 struct command_t command = {NULL, 0, {NULL}};
 	 int childPID, status;
-	 char *cwd = getcwd(NULL, MAX_DIR_LEN);
 
 
 
 //	pathv = (char *) malloc(sizeof(char) * MAX_PATH_LEN);
-	commandLine = (char *) malloc(sizeof(char) * LINE_LEN);
+//  commandLine = (char *) malloc(sizeof(char) * LINE_LEN);
 
 	parsePath(pathv);/* page 80 (parse_libs) */
 
@@ -39,12 +38,7 @@ int main(void)
 			/* Report Error */
 			continue;
 		}
-		if(!strcmp(command.name, "cd")) {
-				if(chdir(command.argv[1]) == 0)
-						getcwd(cwd, MAX_DIR_LEN);
-				else
-						perror("Cannot change directory");
-					}
+
 		if ((childPID = fork()) == 0) {
 			execvp(command.name,command.argv);
 		}
@@ -52,7 +46,7 @@ int main(void)
 
 	free(command.name);	}
 printf("%s\n","codyShell terminating..." );
-	free(commandLine);
+	free(pathv[0]);
 
 	return 0;
 
