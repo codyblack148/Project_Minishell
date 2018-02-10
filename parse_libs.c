@@ -64,8 +64,9 @@ char *lookupPath(char **argv,char **dir)
  * return the string.
  */
 
-    char *result = NULL;
+    char *result;
     char pName[MAX_PATH_LEN + 1];
+    result = (char *) malloc(sizeof(char) * MAX_DIR_LEN);
 
     int i;
 /* Check to see if file name is already an absolute path name */
@@ -79,7 +80,6 @@ char *lookupPath(char **argv,char **dir)
         printf("%s\n","File is not executable. Check permissions." );
         return NULL;
       }
-      result = (char *) malloc(sizeof(char) * MAX_DIR_LEN);
       strcpy(result,argv[0]);
       return result;
    }
@@ -92,27 +92,6 @@ char *lookupPath(char **argv,char **dir)
 	    	printf("Terminating codyShell...\n");
 		exit(0);
 	    }
-    if(!strcmp(argv[0],"cd")){
-   	    	return argv[0];
-   	    }
-    if(!strcmp(argv[0],"ls")){
-	    i = 1;
-	    while(argv[i] != NULL){
-		if(strcmp(argv[i],"")){
-			return argv[0];
-		}    
-	    	while(!strcmp(argv[i],"")){
-			argv[i] = NULL;
-		//	printf("one space\n");
-			if(argv[i++]==NULL)break;
-		}
-	    }
-	    argv[1] = argv[i];
-		}
-   	    
-
-
-
     for( i = 0 ; i < MAX_PATH_LEN ; ++i )
     {
 	    if(dir[i] == NULL) break;
@@ -123,9 +102,7 @@ char *lookupPath(char **argv,char **dir)
         strcat(pName,argv[0]);
 
         if (access(pName,F_OK | X_OK) != -1) {
-          result = (char *) malloc(sizeof(char) * MAX_DIR_LEN);
           strcpy(result,pName);
-
           return result;
         }
     }
@@ -164,16 +141,20 @@ char *lookupDir(char *s,char **dirs)
  * we increment argc.
  * Finally, we initialize command.name
  */
-int parseCommand(char *cLine,struct command_t *cmd) /* page 62-3 */
-{
-  int argc = 0;
-  char **clPtr = &cLine;
+ int parseCommand(char *cmdLine, struct command_t *command)  //takes the command, parses it down, and then allows it to be run.
+ {
+   int  argcounter = 0;
+   char **cmdLinePtr =  &cmdLine;
+     char * buffer;
+     while((buffer = strsep(&cmdLine, WHITESPACE)) != NULL){
+       if(strlen(buffer) > 0){
+         command->argv[argcounter++] = buffer;
 
-  /* Fill argv[] */
-  while( (cmd->argv[argc++] = strsep(clPtr, WHITESPACE)) != NULL);
-  cmd->argv[argc--] = NULL;
-  cmd->argc = argc;
-  return 1;
+       }
+     }
+     command->argv[argcounter--] = NULL;
+     command->argc = argcounter;
+     return 0;
 }
 
 void printPrompt()
@@ -195,6 +176,6 @@ void readCommand(char *buffer)
     printf("%s\n","Cannot read command." );
     exit(-1);
   }
-  buffer[strlen(buffer)-1] = '\0';
+  buffer[strlen(buffer)] = '\0';
 
 }
