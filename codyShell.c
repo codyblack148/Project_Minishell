@@ -38,6 +38,9 @@ int main(void)
 			/* Report Error */
 			continue;
 		}
+		if(!strcmp(command.name,"exit") || !strcmp(command.name,"quit")){		
+			break;
+		}
 
 		if ((childPID = fork()) == 0) {
 			execvp(command.name,command.argv);
@@ -46,6 +49,7 @@ int main(void)
 
 	free(command.name);	}
 printf("%s\n","codyShell terminating..." );
+	free(command.name);
 	free(pathv[0]);
 
 	return 0;

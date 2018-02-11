@@ -89,8 +89,8 @@ char *lookupPath(char **argv,char **dir)
  * Use access() to see if the file is in a dir.
  */
 	 if(!strcmp(argv[0],"exit") || !strcmp(argv[0],"quit")){
-	    	printf("Terminating codyShell...\n");
-		exit(0);
+	    	strcpy(result,argv[0]);
+		return result;
 	    }
     for( i = 0 ; i < MAX_PATH_LEN ; ++i )
     {
