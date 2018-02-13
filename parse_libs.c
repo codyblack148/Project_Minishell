@@ -74,10 +74,12 @@ char *lookupPath(char **argv,char **dir)
    {
       if (access(argv[0],F_OK) == -1) {
         printf("%s\n","File does not exist." );
+	free(result);
         return NULL;
       }
       else if (access(argv[0],X_OK) == -1) {
         printf("%s\n","File is not executable. Check permissions." );
+	free(result);
         return NULL;
       }
       strcpy(result,argv[0]);
@@ -111,6 +113,7 @@ char *lookupPath(char **argv,char **dir)
  * file name not found in any path variable
  */
     fprintf( stderr, "%s command not found\n", argv[0] );
+    free(result);
     return NULL;
 }
 
